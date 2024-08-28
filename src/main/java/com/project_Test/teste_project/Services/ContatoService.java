@@ -47,6 +47,29 @@ public class ContatoService {
 
         return contatoDTO;
     }
+
+    public ContatoDTO buscarPorNumero(String celular) {
+
+        Contato contato = contatoRepository.findByContatoCelular(celular)
+                .orElseThrow(() -> new ResourceNotFoundException("Contato não encontrado com o número de celular: " + celular));
+
+
+        ContatoDTO contatoDTO = new ContatoDTO();
+        contatoDTO.setContatoId(contato.getContatoId());
+        contatoDTO.setContatoNome(contato.getContatoNome());
+        contatoDTO.setContatoEmail(contato.getContatoEmail());
+        contatoDTO.setContatoCelular(contato.getContatoCelular());
+        contatoDTO.setContatoTelefone(contato.getContatoTelefone());
+        contatoDTO.setContatoSnFavorito(contato.getContatoSnFavorito());
+        contatoDTO.setContatoSnAtivo(contato.getContatoSnAtivo());
+        contatoDTO.setContatoDhCad(contato.getContatoDhCad());
+
+        return contatoDTO;
+    }
+
+
+
+
     public List<ContatoDTO> listarContatos() {
         return contatoRepository.findAll().stream()
                 .map(contato -> {
