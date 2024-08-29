@@ -1,12 +1,11 @@
-package com.project_Test.teste_project.Services;
+package com.project_Test.Services;
 
 
-
-import com.project_Test.teste_project.Dtos.ContatoDTO;
-import com.project_Test.teste_project.Exceptions.DuplicateResourceException;
-import com.project_Test.teste_project.Exceptions.ResourceNotFoundException;
-import com.project_Test.teste_project.Model.Contato;
-import com.project_Test.teste_project.Repository.ContatoRepository;
+import com.project_Test.Dtos.ContatoDTO;
+import com.project_Test.Exceptions.DuplicateResourceException;
+import com.project_Test.Exceptions.ResourceNotFoundException;
+import com.project_Test.Model.Contato;
+import com.project_Test.Repository.ContatoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +27,6 @@ public class ContatoService {
             throw new DuplicateResourceException("Contato já cadastrado com este número de celular.");
         }
 
-
         Contato contato = new Contato();
         contato.setContatoNome(contatoDTO.getContatoNome());
         contato.setContatoEmail(contatoDTO.getContatoEmail());
@@ -38,23 +36,17 @@ public class ContatoService {
         contato.setContatoSnAtivo('S');
         contato.setContatoDhCad(LocalDateTime.now());
 
-
         contato = contatoRepository.save(contato);
-
-
         contatoDTO.setContatoId(contato.getContatoId());
         contatoDTO.setContatoDhCad(contato.getContatoDhCad());
 
         return contatoDTO;
     }
-
     public List<ContatoDTO> buscarPorNumero(String celular) {
         List<Contato> contatos = contatoRepository.findByContatoCelularContaining(celular);
-
         if (contatos.isEmpty()) {
             throw new ResourceNotFoundException("Nenhum contato encontrado com o número de celular: " + celular);
         }
-
         return contatos.stream().map(contato -> {
             ContatoDTO contatoDTO = new ContatoDTO();
             contatoDTO.setContatoId(contato.getContatoId());
@@ -68,45 +60,42 @@ public class ContatoService {
             return contatoDTO;
         }).collect(Collectors.toList());
     }
-
-
-
-
     public List<ContatoDTO> listarContatos() {
-        return contatoRepository.findAll().stream()
-                .map(contato -> {
-                    ContatoDTO dto = new ContatoDTO();
-                    dto.setContatoId(contato.getContatoId());
-                    dto.setContatoNome(contato.getContatoNome());
-                    dto.setContatoEmail(contato.getContatoEmail());
-                    dto.setContatoCelular(contato.getContatoCelular());
-                    dto.setContatoTelefone(contato.getContatoTelefone());
-                    dto.setContatoSnFavorito(contato.getContatoSnFavorito());
-                    dto.setContatoSnAtivo(contato.getContatoSnAtivo());
-                    dto.setContatoDhCad(contato.getContatoDhCad());
-                    return dto;
-                })
-                .collect(Collectors.toList());
+        return contatoRepository.findAll().stream().map(contato -> {
+            ContatoDTO dto = new ContatoDTO();
+            dto.setContatoId(contato.getContatoId());
+            dto.setContatoNome(contato.getContatoNome());
+            dto.setContatoEmail(contato.getContatoEmail());
+            dto.setContatoCelular(contato.getContatoCelular());
+            dto.setContatoTelefone(contato.getContatoTelefone());
+            dto.setContatoSnFavorito(contato.getContatoSnFavorito());
+            dto.setContatoSnAtivo(contato.getContatoSnAtivo());
+            dto.setContatoDhCad(contato.getContatoDhCad());
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     public ContatoDTO atualizarContato(Long id, ContatoDTO contatoDTO) {
-        Contato contato = contatoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Contato não encontrado."));
+        Contato contato = contatoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Contato não encontrado."));
 
         contato.setContatoNome(contatoDTO.getContatoNome());
         contato.setContatoEmail(contatoDTO.getContatoEmail());
         contato.setContatoTelefone(contatoDTO.getContatoTelefone());
         contato.setContatoSnFavorito(contatoDTO.getContatoSnFavorito());
         contato = contatoRepository.save(contato);
-
         contatoDTO.setContatoDhCad(contato.getContatoDhCad());
         return contatoDTO;
     }
 
-    public void inativarContato(Long id) {
-        Contato contato = contatoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Contato não encontrado."));
-        contato.setContatoSnAtivo('N');
+    public void inativarAtivarContato(Long id) {
+        Contato contato = contatoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Contato não encontrado."));
+        if (contato.getContatoSnAtivo() == 'N') {
+            contato.setContatoSnAtivo('S');
+
+        } else if (contato.getContatoSnAtivo() == 'S') {
+            contato.setContatoSnAtivo('N');
+
+        }
         contatoRepository.save(contato);
     }
 }

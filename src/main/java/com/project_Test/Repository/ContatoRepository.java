@@ -1,7 +1,7 @@
-package com.project_Test.teste_project.Repository;
+package com.project_Test.Repository;
 
-import com.project_Test.teste_project.Dtos.ContatoDTO;
-import com.project_Test.teste_project.Model.Contato;
+import com.project_Test.Dtos.ContatoDTO;
+import com.project_Test.Model.Contato;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
