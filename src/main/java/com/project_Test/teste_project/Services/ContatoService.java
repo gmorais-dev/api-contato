@@ -48,23 +48,25 @@ public class ContatoService {
         return contatoDTO;
     }
 
-    public ContatoDTO buscarPorNumero(String celular) {
+    public List<ContatoDTO> buscarPorNumero(String celular) {
+        List<Contato> contatos = contatoRepository.findByContatoCelularContaining(celular);
 
-        Contato contato = contatoRepository.findByContatoCelular(celular)
-                .orElseThrow(() -> new ResourceNotFoundException("Contato não encontrado com o número de celular: " + celular));
+        if (contatos.isEmpty()) {
+            throw new ResourceNotFoundException("Nenhum contato encontrado com o número de celular: " + celular);
+        }
 
-
-        ContatoDTO contatoDTO = new ContatoDTO();
-        contatoDTO.setContatoId(contato.getContatoId());
-        contatoDTO.setContatoNome(contato.getContatoNome());
-        contatoDTO.setContatoEmail(contato.getContatoEmail());
-        contatoDTO.setContatoCelular(contato.getContatoCelular());
-        contatoDTO.setContatoTelefone(contato.getContatoTelefone());
-        contatoDTO.setContatoSnFavorito(contato.getContatoSnFavorito());
-        contatoDTO.setContatoSnAtivo(contato.getContatoSnAtivo());
-        contatoDTO.setContatoDhCad(contato.getContatoDhCad());
-
-        return contatoDTO;
+        return contatos.stream().map(contato -> {
+            ContatoDTO contatoDTO = new ContatoDTO();
+            contatoDTO.setContatoId(contato.getContatoId());
+            contatoDTO.setContatoNome(contato.getContatoNome());
+            contatoDTO.setContatoEmail(contato.getContatoEmail());
+            contatoDTO.setContatoCelular(contato.getContatoCelular());
+            contatoDTO.setContatoTelefone(contato.getContatoTelefone());
+            contatoDTO.setContatoSnFavorito(contato.getContatoSnFavorito());
+            contatoDTO.setContatoSnAtivo(contato.getContatoSnAtivo());
+            contatoDTO.setContatoDhCad(contato.getContatoDhCad());
+            return contatoDTO;
+        }).collect(Collectors.toList());
     }
 
 

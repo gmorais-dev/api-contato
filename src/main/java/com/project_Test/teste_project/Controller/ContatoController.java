@@ -26,9 +26,9 @@ public class ContatoController {
     }
 
     @GetMapping("/{celular}")
-    public ResponseEntity<ContatoDTO> buscarPorCelular(@PathVariable String celular) {
-        ContatoDTO contatoDTO = contatoService.buscarPorNumero(celular);
-        return ResponseEntity.ok(contatoDTO);
+    public ResponseEntity<List<ContatoDTO>> buscarPorCelular(@PathVariable String celular) {
+        List<ContatoDTO> contatos = contatoService.buscarPorNumero(celular);
+        return ResponseEntity.ok(contatos);
     }
 
 
